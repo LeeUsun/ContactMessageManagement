@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_not_goods1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingBottom="18dp"
+    android:paddingTop="50dp"
+    android:visibility="visible">
+
+
+    <ImageView
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_margin="5dp"
+        android:src="@drawable/image_box"/>
+
+    <TextView
+        android:id="@+id/ll_not_goods5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:text="数据为空"
+        android:textColor="#272727"
+        android:textSize="15sp"
+        />
+
+    <TextView
+        android:id="@+id/ll_not_goods6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="去接新的警情"
+        android:textColor="#272727"
+        android:visibility="gone"
+        android:textSize="15sp"/>
+
+
+</LinearLayout>

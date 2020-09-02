@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/save_message"
+        android:orderInCategory="100"
+        android:title="保存所有短信"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/delete_message"
+        android:orderInCategory="100"
+        android:title="删除所有短信"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/save_contact"
+        android:orderInCategory="100"
+        android:title="保存所有通讯录"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/delete_contact"
+        android:orderInCategory="100"
+        android:title="删除所有通讯录"
+        app:showAsAction="never" />
+</menu>

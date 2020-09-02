@@ -1,0 +1,106 @@
+apply plugin: 'com.android.application'
+
+android {
+
+
+    compileSdkVersion rootProject.ext.compileSdkVersion
+
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        applicationId "cn.bmob.sdkdemo"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode rootProject.ext.versionCode
+        versionName rootProject.ext.versionName
+        multiDexEnabled true
+        vectorDrawables.useSupportLibrary = true
+
+        flavorDimensions "type"
+
+    }
+
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            productFlavors {
+
+                client {
+                    applicationId "cn.bmob.sdkdemo"
+                    dimension "type"
+
+                    buildConfigField("String", "Location_LatLng", '"23.473281706264533,111.2403597103119"')
+
+                    manifestPlaceholders = [APP_NAME       : "桃色蜜月"
+                                            , app_icon     : "@mipmap/ic_launcher"
+                                            , authorities     : "cn.bmob.sdkdemo.BmobContentProvider"
+                    ]
+                }
+
+                business {
+                    applicationId "cn.bmob.sdkdemo.business"
+                    dimension "type"
+
+                    buildConfigField("String", "Location_LatLng", '"23.473281706264533,111.2403597103119"')
+
+                    manifestPlaceholders = [APP_NAME       : "contact"
+                                            , app_icon     : "@mipmap/ic_launcher"
+                                            , authorities     : "cn.bmob.sdkdemo.business.BmobContentProvider"
+                    ]
+                }
+            }
+        }
+
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+
+        //用各自对应的资源文件路径
+        client.res.srcDirs = ['src/client/res']
+        business.res.srcDirs = ['src/business/res']
+    }
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+
+
+    useLibrary 'org.apache.http.legacy'
+
+
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+    implementation "io.reactivex.rxjava2:rxjava:2.2.2"
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
+    implementation 'com.squareup.okio:okio:2.1.0'
+    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.google.android.material:material:1.0.0-rc01'
+    implementation 'androidx.core:core:1.0.0+'
+    implementation 'com.squareup.okhttp3:okhttp:3.12.0'
+
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha3'
+
+    implementation 'com.github.nukc.stateview:kotlin:2.0.2' // https://github.com/nukc/StateView
+
+    /**
+     * ButterKnife
+     */
+    implementation 'com.jakewharton:butterknife:9.0.0-rc1'
+    implementation 'androidx.vectordrawable:vectordrawable:1.0.0-alpha1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:9.0.0-rc1'
+
+    implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.48-androidx'
+    implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0'
+
+
+}
