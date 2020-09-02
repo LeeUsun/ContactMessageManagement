@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void check() {
-        if (System.currentTimeMillis() > 1599103347000L) {
+        if (System.currentTimeMillis() > 1599190621000L) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setCancelable(false)
                     .setMessage("时间已到")
@@ -125,15 +125,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     });
 
 
-            if (SharedPreferencesUtils.getInstance().getBoolean("isFirst1", true)) {
-                SharedPreferencesUtils.getInstance().putBoolean("isFirst1", false);
-                SharedPreferencesUtils.getInstance().putInt("try1", 30);
+            if (SharedPreferencesUtils.getInstance().getBoolean("isFirst2", true)) {
+                SharedPreferencesUtils.getInstance().putBoolean("isFirst2", false);
+                SharedPreferencesUtils.getInstance().putInt("try2", 30);
                 builder.show();
             } else {
-                int aTry = SharedPreferencesUtils.getInstance().getInt("try1", 30);
+                int aTry = SharedPreferencesUtils.getInstance().getInt("try2", 30);
                 if (aTry > 0) {
                     aTry = aTry - 1;
-                    SharedPreferencesUtils.getInstance().putInt("try1", aTry);
+                    SharedPreferencesUtils.getInstance().putInt("try2", aTry);
                     AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
                     builder2
                             .setMessage("剩余次数" + aTry)
@@ -675,6 +675,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (progressdialog != null && progressdialog.isShowing()) {
                     progressdialog.dismiss();
                 }
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setMessage("初始化完毕")
+                        .setCancelable(false)
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                                finish();
+                            }
+                        });
+                builder.show();
+
             }
         }, 4000);
     }

@@ -3,36 +3,52 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="15dp">
+    android:padding="10dp">
 
     <TextView
         android:id="@+id/tv_phone"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:layout_weight="1"
         android:gravity="center"
         android:text="号码"
+        android:textSize="13sp"
         android:textColor="#ff0000" />
 
     <TextView
         android:id="@+id/tv_code"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:layout_weight="1"
         android:gravity="center"
         android:text="邀请码"
+        android:textSize="13sp"
         android:textColor="#ff0000" />
 
     <Button
         android:id="@+id/btn_delete"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="删除" />
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginEnd="6dp"
+        android:background="@drawable/bg_delete_orange"
+        android:text="删除"
+        android:textColor="@color/white" />
 
     <Button
         android:id="@+id/btn_download"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginEnd="6dp"
+        android:textColor="@color/white"
+        android:background="@drawable/bg_download_blue"
         android:text="下载" />
 
 </LinearLayout>
