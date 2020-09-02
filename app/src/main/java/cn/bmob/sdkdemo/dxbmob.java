@@ -56,9 +56,7 @@ public class dxbmob extends BmobObject implements MultiItemEntity {
     public String toString() {
         return
                 "phone='" + phone + '\'' +
-                ", nr='" + nr + '\'' +
-                ", person='" + person + '\'' +
-                ", code='" + code + '\'' ;
+                ", nr='" + nr + '\'' ;
     }
 
     @Override

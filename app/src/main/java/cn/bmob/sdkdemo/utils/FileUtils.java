@@ -79,7 +79,7 @@ public class FileUtils {
     /**
      * 输出log信息到文件中
      */
-    public static String FileLog(String type, String info) {
+    public static String FileLog(String fileName, String info) {
         if (OutLogFile) {
 
             String crashPath = Environment.getExternalStorageDirectory() + "";
@@ -88,7 +88,7 @@ public class FileUtils {
             DateFormat formatter2 = new SimpleDateFormat("HH:mm:ss");
             String time = formatter2.format(new Date()) + "  ";
 
-            String fileName = type + "-List" + ".txt";
+            fileName = fileName + ".txt";
 //            info = "\r\n" + time + info;
 
             String path = Environment.getExternalStorageDirectory() + "/ContactApp";

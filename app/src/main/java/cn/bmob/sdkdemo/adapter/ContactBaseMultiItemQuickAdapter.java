@@ -58,6 +58,7 @@ public class ContactBaseMultiItemQuickAdapter extends BaseMultiItemQuickAdapter<
                         }
                     }
                 });
+                helper.addOnClickListener(R.id.btn_delete, R.id.btn_download);
                 break;
             case TYPE_LEVEL_1:
                 final Contact contact = (Contact) item;

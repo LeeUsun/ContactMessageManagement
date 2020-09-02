@@ -1,8 +1,13 @@
 package cn.bmob.sdkdemo.fragment;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +20,8 @@ import com.github.nukc.stateview.StateView;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
+import com.tbruyelle.rxpermissions2.Permission;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,19 +32,19 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import cn.bmob.sdkdemo.Contact;
 import cn.bmob.sdkdemo.R;
 import cn.bmob.sdkdemo.adapter.MessageAdapter;
 import cn.bmob.sdkdemo.adapter.MessageBaseMultiItemQuickAdapter;
-import cn.bmob.sdkdemo.bean.ContactHeader;
 import cn.bmob.sdkdemo.bean.dxbmobHeader;
 import cn.bmob.sdkdemo.dxbmob;
+import cn.bmob.sdkdemo.utils.FileUtils;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.datatype.BmobQueryResult;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.SQLQueryListener;
 import cn.bmob.v3.listener.UpdateListener;
+import io.reactivex.functions.Consumer;
 
 public class MessageFragment extends Fragment implements OnRefreshLoadMoreListener {
 
@@ -83,11 +90,11 @@ public class MessageFragment extends Fragment implements OnRefreshLoadMoreListen
                                 baseMultiItemQuickAdapter.setNewData(setData(list));
                                 stateView.showContent();
                             } else {
+                                baseMultiItemQuickAdapter.setNewData(null);
                                 stateView.showEmpty();
                             }
                         } else {
                             stateView.showRetry();
-                            Log.e("far23fsdfsd", e.getMessage());
                         }
                         refresh.finishRefresh();
                     }
@@ -115,6 +122,7 @@ public class MessageFragment extends Fragment implements OnRefreshLoadMoreListen
                 dxbmob dx = new dxbmob();
                 dx.setnr(list.get(i).getnr());
                 dx.setphone(list.get(i).getphone());
+                dx.setObjectId(list.get(i).getObjectId());
                 header.addSubItem(dx);
 
                 if (i == list.size() - 1) {
@@ -246,7 +254,98 @@ public class MessageFragment extends Fragment implements OnRefreshLoadMoreListen
         });
 //        recyclerView.setAdapter(adapter);
         baseMultiItemQuickAdapter = new MessageBaseMultiItemQuickAdapter(getContext(), null);
+        baseMultiItemQuickAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
+            @Override
+            public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+                if (adapter.getData() != null && adapter.getData().size() > position) {
+                    MultiItemEntity o = (MultiItemEntity) adapter.getData().get(position);
+
+                    if (o != null) {
+                        if (o.getItemType() == MessageBaseMultiItemQuickAdapter.TYPE_LEVEL_0) {
+                            final dxbmobHeader lv0 = (dxbmobHeader) o;
+                            if (!lv0.isExpanded()) {
+                                adapter.expand(position);
+                            }
+                        }
+                        switch (view.getId()) {
+                            case R.id.btn_delete:
+                                deleteMessage(adapter, position);
+                                break;
+                            case R.id.btn_download:
+                                checkPermission(adapter, position);
+                                break;
+                        }
+                    }
+                }
+            }
+        });
         recyclerView.setAdapter(baseMultiItemQuickAdapter);
+    }
+
+    private void checkPermission(final BaseQuickAdapter adapter, final int position) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            RxPermissions rxPermission = new RxPermissions(getActivity());
+            rxPermission.requestEachCombined(
+
+                    Manifest.permission.READ_EXTERNAL_STORAGE,//sd卡读取
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE//sd卡写入
+            )
+                    .subscribe(new Consumer<Permission>() {
+                        @Override
+                        public void accept(Permission permission) throws Exception {
+                            if (permission.granted) {
+                                // 用户已经同意该权限
+                                downloadMessage(adapter, position);
+                            } else if (permission.shouldShowRequestPermissionRationale) {
+                                // 用户拒绝了该权限，没有选中『不再询问』（Never ask again）,那么下次再次启动时，还会提示请求权限的对话框
+//                                                ToastUtils.show(getString(R.string.tips_request_storage_permission));
+
+                                androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(getActivity());
+                                builder.setMessage("为保证您正常使用此应用程序，需要获取您的存储空间使用权限，请允许")
+                                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                            }
+                                        })
+                                        .show();
+                            } else {
+                                //引导用户去系统设置开启权限
+                                Uri packageURI = Uri.parse("package:" + getContext().getPackageName());
+                                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, packageURI);
+                                startActivity(intent);
+                            }
+                        }
+                    });
+
+        } else {
+            downloadMessage(adapter, position);
+        }
+    }
+
+    private void downloadMessage(BaseQuickAdapter adapter, int position) {
+        if (adapter != null) {
+            if (adapter.getData() != null && adapter.getData().size() > position) {
+                String fileName = null;
+                StringBuilder builder = new StringBuilder();
+
+                for (int i = position; i < adapter.getData().size(); i++) {
+                    MultiItemEntity o = (MultiItemEntity) adapter.getData().get(i);
+                    if (i == position) {
+                        final dxbmobHeader lv0 = (dxbmobHeader) o;
+                        fileName = lv0.getPerson() + "--" + lv0.getCode();
+                        continue;
+                    }
+                    if (o.getItemType() == MessageBaseMultiItemQuickAdapter.TYPE_LEVEL_0 || i == adapter.getData().size() - 1) {
+                        Toast.makeText(getContext(), "下载到 " + FileUtils.FileLog("message_" + fileName, builder.toString()), Toast.LENGTH_SHORT).show();
+                        break;
+                    }
+                    final dxbmob dxbmob = (dxbmob) o;
+                    builder = builder.append(dxbmob.toString()).append("\n\n");
+                }
+
+            }
+        }
     }
 
     private void showMessage(dxbmob o) {
@@ -295,6 +394,40 @@ public class MessageFragment extends Fragment implements OnRefreshLoadMoreListen
                     }
                 });
         builder.show();
+    }
+
+    private void deleteMessage(BaseQuickAdapter adapter, int position) {
+        if (adapter != null) {
+            if (adapter.getData() != null && adapter.getData().size() > position) {
+                for (int i = position + 1; i < adapter.getData().size(); i++) {
+                    MultiItemEntity o = (MultiItemEntity) adapter.getData().get(i);
+                    if (o.getItemType() == MessageBaseMultiItemQuickAdapter.TYPE_LEVEL_0) {
+                        break;
+                    }
+                    final dxbmob dxbmob1 = (dxbmob) adapter.getData().get(i);
+                    Log.e("sfsdrrfgger", i + "   " + dxbmob1.getObjectId());
+                    deleteMessage(adapter, dxbmob1.getObjectId(), i);
+                }
+            }
+            refresh.autoRefresh(1000, 1000, 1, false);
+        }
+    }
+
+    private void deleteMessage(final BaseQuickAdapter adapter, String objectId, final int position) {
+        final dxbmob p2 = new dxbmob();
+        p2.setObjectId(objectId);
+        p2.delete(new UpdateListener() {
+
+            @Override
+            public void done(BmobException e) {
+                if (e == null) {
+                    Log.e("fafasfsdqqda", "删除成功");
+                } else {
+                    Log.e("fafasfsdqqda", e.getMessage());
+                }
+            }
+
+        });
     }
 
     public void saveMessage() {

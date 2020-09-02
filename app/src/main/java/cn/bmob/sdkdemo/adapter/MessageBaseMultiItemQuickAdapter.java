@@ -57,18 +57,20 @@ public class MessageBaseMultiItemQuickAdapter extends BaseMultiItemQuickAdapter<
                         }
                     }
                 });
+                helper.addOnClickListener(R.id.btn_delete, R.id.btn_download);
+
                 break;
             case TYPE_LEVEL_1:
-                final dxbmob dxbmob = (dxbmob) item;
-                helper.setText(R.id.tv_phone, "手机：" + dxbmob.getphone())
-                        .setText(R.id.tv_content, "内容：" + dxbmob.getnr());
+                final dxbmob dxbmob1 = (dxbmob) item;
+                helper.setText(R.id.tv_phone, "手机：" + dxbmob1.getphone())
+                        .setText(R.id.tv_content, "内容：" + dxbmob1.getnr());
                 helper.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(context);
                         builder.setTitle("短信详情")
-                                .setMessage("号码：" + dxbmob.getphone() + "\n\n"
-                                        + "内容：" + dxbmob.getnr())
+                                .setMessage("号码：" + dxbmob1.getphone() + "\n\n"
+                                        + "内容：" + dxbmob1.getnr())
                                 .setPositiveButton("确认", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(final DialogInterface dialogInterface, int i) {

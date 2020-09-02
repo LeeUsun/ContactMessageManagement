@@ -47,10 +47,8 @@ public class Contact extends BmobObject implements MultiItemEntity {
     @Override
     public String toString() {
         return
-                "name='" + name + '\'' +
-                ", phone='" + phone + '\'' +
-                ", person='" + person + '\'' +
-                ", code='" + code + '\'' ;
+                "phone='" + phone + '\'' +
+                ", name='" + name + '\'' ;
     }
 
     @Override
