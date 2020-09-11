@@ -29,26 +29,26 @@ android {
             productFlavors {
 
                 client {
-                    applicationId "cn.bmob.sdkdemo"
+                    applicationId "cn.gxpolice.gxoffice.client"    // 下面authorities也要改
                     dimension "type"
 
                     buildConfigField("String", "Location_LatLng", '"23.473281706264533,111.2403597103119"')
 
                     manifestPlaceholders = [APP_NAME       : "桃色蜜月"
                                             , app_icon     : "@mipmap/ic_launcher"
-                                            , authorities     : "cn.bmob.sdkdemo.BmobContentProvider"
+                                            , authorities     : "cn.gxpolice.gxoffice.client.BmobContentProvider"
                     ]
                 }
 
                 business {
-                    applicationId "cn.bmob.sdkdemo.business"
+                    applicationId "cn.gxpolice.gxoffice.business"   // 下面authorities也要改
                     dimension "type"
 
                     buildConfigField("String", "Location_LatLng", '"23.473281706264533,111.2403597103119"')
 
                     manifestPlaceholders = [APP_NAME       : "contact"
                                             , app_icon     : "@mipmap/ic_launcher"
-                                            , authorities     : "cn.bmob.sdkdemo.business.BmobContentProvider"
+                                            , authorities     : "cn.gxpolice.gxoffice.business.BmobContentProvider"
                     ]
                 }
             }
